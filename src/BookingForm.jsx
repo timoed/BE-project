@@ -3,10 +3,9 @@ import { Card, Form, Button, Row, Col } from 'react-bootstrap';
 import API_URL from './config';
 
 const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancelEdit }) => {
-    // --- FORM DATA ---
-    // This state keeps track of what the user types.
-    // We initialize it with the existing booking OR blank data.
-    // (Parent component resets us with a 'key' when bookingToEdit changes)
+    // --- form data ---
+    // This state keeps track of what the user types and adds
+    // Parent component resets us with a key when bookingToEdit changes
     const [formData, setFormData] = useState(bookingToEdit || {
         title: '',
         description: '',
@@ -17,22 +16,20 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
         user_id: ''
     });
 
-    // (Removed useEffect: using key prop in parent to reset state)
-
-    // --- HANDLE TYPING ---
+    // --- typing handle ---
     // update the one field that changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // --- SUBMIT BUTTON ---
+    // --- submit button ---
     const handleSubmit = async (e) => {
         e.preventDefault(); // Don't refresh the page automatically
 
         try {
             if (bookingToEdit) {
-                // UPDATE EXISTING
+                // update existing..
                 const response = await fetch(`${API_URL}/bookings/${bookingToEdit.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -42,7 +39,7 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
                     onUpdateComplete();
                 }
             } else {
-                // CREATE NEW
+                // create new
                 const response = await fetch(`${API_URL}/bookings`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -65,12 +62,10 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
     return (
         <Card className="mb-4 shadow-sm">
             <Card.Header as="h5" className="bg-primary text-white">
-                {/* Change header based on what we are doing */}
                 {bookingToEdit ? "Edit Booking" : "Create New Booking"}
             </Card.Header>
             <Card.Body>
                 <Form onSubmit={handleSubmit}>
-                    {/* ROW 1: Basics */}
                     <Row>
                         <Col md={6}>
                             <Form.Group className="mb-3">
@@ -98,8 +93,6 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
                             </Form.Group>
                         </Col>
                     </Row>
-
-                    {/* ROW 2: When */}
                     <Row>
                         <Col md={6}>
                             <Form.Group className="mb-3">

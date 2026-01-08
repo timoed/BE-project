@@ -9,7 +9,7 @@ const ReferenceExplorer = () => {
     const [events, setEvents] = useState([]);   // List of upcoming events
 
     // useEffect with no dependencies array
-    // When this box appears, go fetch the reference data.
+    // When this box appears, so then fetch the reference data.
     useEffect(() => {
         // Fetch Proxies
         fetch(`${API_URL}/proxies`)
@@ -30,10 +30,10 @@ const ReferenceExplorer = () => {
                 Proxy/Event Explorer
             </Card.Header>
             <Card.Body className="p-2">
-                {/* TABS: Let user switch between different lists */}
+                {/* tabs should allow switch between lists */}
                 <Tabs defaultActiveKey="proxies" className="mb-3 small">
 
-                    {/* TAB 1: PROXIES */}
+                    {/* tab 1 - proxies */}
                     <Tab eventKey="proxies" title="Proxies">
                         <div className="table-responsive" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <Table size="sm" striped bordered hover className="small mb-0">
@@ -61,7 +61,7 @@ const ReferenceExplorer = () => {
                         </div>
                     </Tab>
 
-                    {/* TAB 2: EVENTS */}
+                    {/* tab 2 - events */}
                     <Tab eventKey="events" title="Events">
                         <div className="table-responsive" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                             <Table size="sm" striped bordered hover className="small mb-0">

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 
-// This component shows the list of bookings.
-// It relies on the parent (App.jsx) to tell it what data to show and what functions to run.
+// This component should show the list of bookings.
+// Must work with App.jsx to tell it what to show and what functions to run
 const BookingTable = ({ bookings, onEdit, onDelete }) => {
     return (
         <Card className="shadow-sm mb-4">
@@ -26,9 +26,9 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* 1. CHECK FOR DATA */}
+                        {/* check data here */}
                         {bookings && bookings.length > 0 ? (
-                            // 2. SHOW THE DATA
+                            // show data
                             bookings.map((booking) => (
                                 <tr key={booking.id}>
                                     <td>{booking.id}</td>
@@ -41,7 +41,7 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                                     <td>{booking.user_id}</td>
                                     <td>
                                         <div className="d-flex gap-2">
-                                            {/* EDIT BUTTON */}
+                                            {/* for eddit button */}
                                             <Button
                                                 variant="warning"
                                                 size="sm"
@@ -50,7 +50,7 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                                                 Edit
                                             </Button>
 
-                                            {/* DELETE BUTTON */}
+                                            {/* delete button */}
                                             <Button
                                                 variant="danger"
                                                 size="sm"
@@ -63,7 +63,7 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                                 </tr>
                             ))
                         ) : (
-                            // 3. NO DATA? SHOW THIS.
+                            // no data, then show erorr response
                             <tr>
                                 <td colSpan="9" className="text-center">
                                     No bookings found.
