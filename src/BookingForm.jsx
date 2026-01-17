@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, Row, Col } from 'react-bootstrap';
+import { Card, Form, Button, Row, Col, ProgressBar } from 'react-bootstrap';
 import API_URL from './config';
+import { storage } from './firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancelEdit }) => {
     // --- form data ---
@@ -13,8 +15,13 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
         time: '',
         phone_number: '',
         email: '',
-        user_id: ''
+        user_id: '',
+        image_url: '' // New field for image URL
     });
+
+    const [imageFile, setImageFile] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [isUploading, setIsUploading] = useState(false);
 
     // --- typing handle ---
     // update the one field that changed
@@ -23,17 +30,64 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleFileChange = (e) => {
+        if (e.target.files[0]) {
+            setImageFile(e.target.files[0]);
+        }
+    };
+
+    const uploadImage = () => {
+        return new Promise((resolve, reject) => {
+            if (!imageFile) {
+                resolve(null);
+                return;
+            }
+
+            const storageRef = ref(storage, `images/${imageFile.name}_${Date.now()}`);
+            const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+            setIsUploading(true);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setUploadProgress(progress);
+                },
+                (error) => {
+                    console.error("Upload failed", error);
+                    setIsUploading(false);
+                    reject(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        setIsUploading(false);
+                        resolve(downloadURL);
+                    });
+                }
+            );
+        });
+    };
+
     // --- submit button ---
     const handleSubmit = async (e) => {
         e.preventDefault(); // Don't refresh the page automatically
 
         try {
+            let finalImageUrl = formData.image_url;
+
+            // Upload image if selected
+            if (imageFile) {
+                finalImageUrl = await uploadImage();
+            }
+
+            const dataToSend = { ...formData, image_url: finalImageUrl };
+
             if (bookingToEdit) {
                 // update existing..
                 const response = await fetch(`${API_URL}/bookings/${bookingToEdit.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(dataToSend),
                 });
                 if (response.ok) {
                     onUpdateComplete();
@@ -43,14 +97,16 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
                 const response = await fetch(`${API_URL}/bookings`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(dataToSend),
                 });
                 if (response.ok) {
                     // Clear form manually
                     setFormData({
                         title: '', description: '', date: '', time: '',
-                        phone_number: '', email: '', user_id: ''
+                        phone_number: '', email: '', user_id: '', image_url: ''
                     });
+                    setImageFile(null);
+                    setUploadProgress(0);
                     onBookingAdded();
                 }
             }
@@ -162,6 +218,26 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
                         </Col>
                     </Row>
 
+                    {/* ROW 4: Image Upload */}
+                    <Row>
+                        <Col md={12}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Attached Image :</Form.Label>
+                                <Form.Control
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    accept="image/*"
+                                />
+                                {isUploading && <ProgressBar now={uploadProgress} label={`${Math.round(uploadProgress)}%`} className="mt-2" />}
+                                {formData.image_url && !isUploading && (
+                                    <div className="mt-2 small text-success">
+                                        Current Image: <a href={formData.image_url} target="_blank" rel="noreferrer">View</a>
+                                    </div>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
                     {/* BUTTONS */}
                     <div className="d-flex justify-content-end gap-2">
                         {bookingToEdit && (
@@ -169,7 +245,7 @@ const BookingForm = ({ onBookingAdded, bookingToEdit, onUpdateComplete, onCancel
                                 Cancel
                             </Button>
                         )}
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" disabled={isUploading}>
                             {bookingToEdit ? "Update Booking" : "Create Booking"}
                         </Button>
                     </div>

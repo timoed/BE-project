@@ -15,6 +15,7 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Image</th>
                             <th>Title</th>
                             <th>Description</th>
                             <th>Date</th>
@@ -32,6 +33,13 @@ const BookingTable = ({ bookings, onEdit, onDelete }) => {
                             bookings.map((booking) => (
                                 <tr key={booking.id}>
                                     <td>{booking.id}</td>
+                                    <td>
+                                        {booking.image_url && (
+                                            <a href={booking.image_url} target="_blank" rel="noreferrer">
+                                                <img src={booking.image_url} alt="img" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                                            </a>
+                                        )}
+                                    </td>
                                     <td>{booking.title}</td>
                                     <td>{booking.description}</td>
                                     <td>{booking.date}</td>

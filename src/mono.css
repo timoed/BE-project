@@ -1,4 +1,4 @@
-/* mono override theme */
+/* force mono override theme */
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
 :root {
@@ -15,17 +15,16 @@ body {
     font-family: 'Roboto Mono', monospace;
 }
 
-/*  addons */
+/* 1. addons */
 .sunken-well {
     background-color: #f5f5f5 !important;
     border: 1px solid #fff;
-    /* Highlight bottom/right technically, but flat for now */
     border-top: 1px solid #888 !important;
     border-left: 1px solid #888 !important;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -1px -1px 0px #fff !important;
 }
 
-/* Containers (Cards) - Sunken Look */
+/* 2. Containers (Cards) - Sunken Look */
 .card {
     background-color: var(--mono-bg) !important;
     border: none !important;
@@ -45,7 +44,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* The Body of the card is the "Well" usually */
+/* The body of the card is the "Well" usually */
 .card-body {
     background-color: var(--mono-surface);
     border: 2px solid var(--mono-border);
@@ -53,14 +52,14 @@ body {
     padding: 20px;
 }
 
-/* from wells */
+/* 3. FORMS - Deep Sunken Wells */
 .form-control,
 .form-select {
     background-color: #f8f8f8 !important;
     border: 1px solid #888 !important;
     border-radius: 0 !important;
     box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.15) !important;
-    /* sunken */
+    /* The Sunk */
     color: #000 !important;
     font-family: 'Roboto Mono', monospace;
     padding: 10px;
@@ -72,7 +71,7 @@ body {
     box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* raised buttons */
+/* 4. BUTTONS - Raised Industrial */
 .btn {
     background-color: #ccc !important;
     color: #000 !important;
@@ -105,7 +104,7 @@ body {
     /* Distinguish delete */
 }
 
-/* sinking data fill */
+/* 5. TABLES - Sunken Data Field */
 .table-responsive {
     /* Apply Sunken Well to the container */
     background-color: #f5f5f5;
@@ -132,7 +131,7 @@ body {
     vertical-align: middle;
 }
 
-/* nav bra */
+/* 6. NAVBAR */
 .navbar {
     background-color: var(--mono-border) !important;
     border-bottom: 4px solid #000 !important;
@@ -144,7 +143,7 @@ body {
     font-weight: 700;
 }
 
-/* Alert! */
+/* 7. ALERTS */
 .alert {
     background-color: #fff !important;
     border: 2px solid #000 !important;
